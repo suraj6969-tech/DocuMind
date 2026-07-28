@@ -60,5 +60,17 @@ class APIClient:
 
         return response.json()
 
+    def delete_document(self, document_id: str) -> None:
+        """
+        Delete a document from the backend.
+        """
+
+        response = requests.delete(
+            f"{self.base_url}/api/v1/documents/{document_id}",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
 
 api_client = APIClient()
