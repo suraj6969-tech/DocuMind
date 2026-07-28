@@ -45,3 +45,29 @@ class DocumentRepository:
             .order_by(Document.uploaded_at.desc())
             .all()
         )
+
+    def get_document_by_id(
+        self,
+        document_id: str,
+    ) -> Document | None:
+        """
+        Return a document by its ID.
+        """
+
+        return (
+            self.db.query(Document)
+            .filter(Document.document_id == document_id)
+            .first()
+        )
+
+
+    def delete_document(
+        self,
+        document: Document,
+    ) -> None:
+        """
+        Delete a document from the database.
+        """
+
+        self.db.delete(document)
+        self.db.commit()

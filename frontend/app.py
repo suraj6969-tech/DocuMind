@@ -4,6 +4,7 @@ from components.header import render_header
 from components.sidebar import render_sidebar
 from components.system_status import render_system_status
 from components.upload import render_upload
+from components.document_table import render_document_table
 
 
 def main() -> None:
@@ -34,6 +35,10 @@ def main() -> None:
 
     # Upload Section
     render_upload()
+
+    st.markdown("---")
+
+    render_document_table()
 
     st.markdown("---")
 

@@ -46,5 +46,19 @@ class APIClient:
 
         return response.json()
 
+    def get_documents(self) -> dict:
+        """
+        Retrieve all uploaded documents from the backend.
+        """
+
+        response = requests.get(
+            f"{self.base_url}/api/v1/documents",
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
 
 api_client = APIClient()
