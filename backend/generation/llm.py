@@ -1,0 +1,37 @@
+from openai import OpenAI
+
+from backend.config import settings
+
+
+class LLM:
+    """
+    Wrapper around the OpenAI Chat Completions API.
+    """
+
+    def __init__(self):
+        self.client = OpenAI(
+            api_key=settings.OPENAI_API_KEY,
+        )
+
+        self.model = settings.LLM_MODEL
+
+    def generate(
+        self,
+        prompt: str,
+    ) -> str:
+        """
+        Generate an answer from the LLM.
+        """
+
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            temperature=0,
+        )
+
+        return response.choices[0].message.content.strip()

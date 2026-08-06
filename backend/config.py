@@ -50,12 +50,14 @@ class Settings(BaseSettings):
     # Storage
     # ==========================
     UPLOAD_DIRECTORY: Path = BASE_DIR / "uploads"
-    CHROMA_DIRECTORY: Path = BASE_DIR / "db"
+    CHROMA_DIRECTORY: Path = BASE_DIR / "vector_store"
 
     # ==========================
     # Retrieval
     # ==========================
     DEFAULT_TOP_K: int = 5
+
+    SCORE_THRESHOLD: float = 0.55
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
