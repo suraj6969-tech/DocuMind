@@ -10,12 +10,12 @@ def main():
 
     print("\nAnswer")
     print("=" * 60)
-    print(response["answer"])
+    print(response.answer)
 
     print("\nSources")
     print("=" * 60)
 
-    for source in response["sources"]:
+    for source in response.sources:
         print(source)
 
 

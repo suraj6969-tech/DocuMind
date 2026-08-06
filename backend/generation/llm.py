@@ -1,6 +1,7 @@
 from openai import OpenAI
 
 from backend.config import settings
+from backend.core.exceptions import LLMException
 
 
 class LLM:
@@ -23,15 +24,19 @@ class LLM:
         Generate an answer from the LLM.
         """
 
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
-            temperature=0,
-        )
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+                temperature=0,
+            )
 
-        return response.choices[0].message.content.strip()
+            return response.choices[0].message.content.strip()
+
+        except Exception as exc:
+            raise LLMException() from exc
