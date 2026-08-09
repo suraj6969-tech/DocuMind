@@ -1,15 +1,23 @@
 # Environment variables
+
 .env
 backend/.env
 
 # Virtual environment
+
 venv/
 .venv/
 
 # Runtime data
+
 backend/uploads/
 backend/vector_store/
 
+# Database
+
+*.db
+
 # Python
+
 __pycache__/
 *.py[cod]
