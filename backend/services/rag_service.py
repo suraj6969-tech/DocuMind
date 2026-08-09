@@ -11,6 +11,8 @@ class RAGService:
     Coordinates the complete Retrieval-Augmented Generation pipeline.
     """
 
+    FALLBACK_ANSWER = "I don't know based on the uploaded documents."
+
     def __init__(
         self,
         retriever: Retriever,
@@ -33,7 +35,7 @@ class RAGService:
 
         if not documents:
             return ChatResponse(
-                answer="I don't know based on the uploaded documents.",
+                answer=self.FALLBACK_ANSWER,
                 sources=[],
             )
 
@@ -45,6 +47,12 @@ class RAGService:
         )
 
         answer = self.llm.generate(prompt)
+
+        if answer.strip() == self.FALLBACK_ANSWER:
+            return ChatResponse(
+                answer=self.FALLBACK_ANSWER,
+                sources=[],
+            )
 
         sources = self._build_sources(documents)
 
