@@ -1,3 +1,5 @@
+import re
+
 from langchain_core.documents import Document
 
 from backend.generation.llm import LLM
@@ -31,7 +33,9 @@ class RAGService:
         Answer a question using the uploaded documents.
         """
 
-        documents = self.retriever.retrieve(question)
+        retrieval_query = self._build_retrieval_query(question)
+
+        documents = self.retriever.retrieve(retrieval_query)
 
         if not documents:
             return ChatResponse(
@@ -60,6 +64,64 @@ class RAGService:
             answer=answer,
             sources=sources,
         )
+
+    def _build_retrieval_query(
+        self,
+        question: str,
+    ) -> str:
+        """
+        Remove presentation instructions from the question
+        before performing semantic retrieval.
+
+        The original question is still sent to the LLM so it
+        can follow the requested output format.
+        """
+
+        retrieval_query = question.strip()
+
+        retrieval_query = re.sub(
+            r"\s+in\s+a\s+numbered\s+list\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        retrieval_query = re.sub(
+            r"\s+in\s+bullet\s+points?\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        retrieval_query = re.sub(
+            r"\s+as\s+a\s+numbered\s+list\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        retrieval_query = re.sub(
+            r"\s+as\s+bullet\s+points?\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        retrieval_query = re.sub(
+            r"\s+in\s+a\s+table\s+with\s+columns?\s+for\s+.+?\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        retrieval_query = re.sub(
+            r"\s+in\s+a\s+table\s*\.?$",
+            "",
+            retrieval_query,
+            flags=re.IGNORECASE,
+        )
+
+        return retrieval_query.strip()
 
     def _build_context(
         self,
