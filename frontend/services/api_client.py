@@ -73,4 +73,25 @@ class APIClient:
         response.raise_for_status()
 
 
+    def chat(
+        self,
+        question: str,
+    ) -> dict:
+        """
+        Ask a question using the RAG backend.
+        """
+
+        response = requests.post(
+            f"{self.base_url}/api/v1/chat",
+            json={
+                "question": question,
+            },
+            timeout=120,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+
 api_client = APIClient()

@@ -5,6 +5,7 @@ from components.sidebar import render_sidebar
 from components.system_status import render_system_status
 from components.upload import render_upload
 from components.document_table import render_document_table
+from components.chat import render_chat
 
 
 def main() -> None:
@@ -42,19 +43,8 @@ def main() -> None:
 
     st.markdown("---")
 
-    st.subheader("🚀 Coming Soon")
-
-    st.markdown(
-        """
-- 📋 Document Management
-- 💬 AI Chat with Documents
-- 🔍 Semantic Search
-- 📚 Retrieval-Augmented Generation (RAG)
-- 📊 Evaluation Dashboard
-- ⚙️ Settings
-"""
-    )
-
+    render_chat()
+    
 
 if __name__ == "__main__":
     main()

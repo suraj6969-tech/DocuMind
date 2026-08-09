@@ -57,7 +57,6 @@ class Settings(BaseSettings):
     # ==========================
     DEFAULT_TOP_K: int = 5
 
-    SCORE_THRESHOLD: float = 0.55
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
