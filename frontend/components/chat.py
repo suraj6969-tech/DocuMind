@@ -10,46 +10,90 @@ def render_chat() -> None:
 
     st.subheader("💬 Chat with Your Documents")
 
-    question = st.text_input(
-        "Ask a question",
-        placeholder="Example: Who founded Nvidia?",
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = []
+
+    for message in st.session_state.chat_messages:
+
+        with st.chat_message(message["role"]):
+
+            st.markdown(message["content"])
+
+            if message["role"] == "assistant" and message.get("sources"):
+
+                with st.expander("📚 Sources"):
+
+                    for source in message["sources"]:
+
+                        st.markdown(
+                            f"**{source['filename']}**"
+                        )
+
+                        st.caption(
+                            f"Chunks: {', '.join(map(str, source['chunks']))}"
+                        )
+
+    question = st.chat_input(
+        "Ask anything about your documents..."
     )
 
     if not question:
         return
 
-    if st.button(
-        "🚀 Ask AI",
-        type="primary",
-    ):
+    st.session_state.chat_messages.append(
+        {
+            "role": "user",
+            "content": question,
+        }
+    )
+
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    with st.chat_message("assistant"):
 
         with st.spinner("Thinking..."):
 
             try:
-
                 response = api_client.chat(question)
 
-                st.success("Answer")
+                answer = response["answer"]
+                sources = response.get("sources", [])
 
-                st.write(response["answer"])
+                st.markdown(answer)
 
-                if response["sources"]:
+                if sources:
 
-                    st.markdown("---")
-                    st.subheader("📚 Sources")
+                    with st.expander("📚 Sources"):
 
-                    for source in response["sources"]:
+                        for source in sources:
 
-                        st.markdown(
-                            f"""
-**{source['filename']}**
+                            st.markdown(
+                                f"**{source['filename']}**"
+                            )
 
-Chunks: {", ".join(map(str, source["chunks"]))}
-"""
-                        )
+                            st.caption(
+                                f"Chunks: {', '.join(map(str, source['chunks']))}"
+                            )
+
+                st.session_state.chat_messages.append(
+                    {
+                        "role": "assistant",
+                        "content": answer,
+                        "sources": sources,
+                    }
+                )
 
             except Exception as e:
 
-                st.error("Unable to generate an answer.")
+                error_message = "Unable to generate an answer."
 
+                st.error(error_message)
                 st.exception(e)
+
+                st.session_state.chat_messages.append(
+                    {
+                        "role": "assistant",
+                        "content": error_message,
+                    }
+                )
