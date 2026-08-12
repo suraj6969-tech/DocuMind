@@ -1,3 +1,5 @@
+import os
+
 import requests
 
 
@@ -6,8 +8,17 @@ class APIClient:
     Handles communication with the FastAPI backend.
     """
 
-    def __init__(self, base_url: str = "http://127.0.0.1:8000"):
-        self.base_url = base_url.rstrip("/")
+    def __init__(
+        self,
+        base_url: str | None = None,
+    ):
+        self.base_url = (
+            base_url
+            or os.getenv(
+                "BACKEND_URL",
+                "http://127.0.0.1:8000",
+            )
+        ).rstrip("/")
 
     def health_check(self) -> dict:
         """
@@ -60,7 +71,10 @@ class APIClient:
 
         return response.json()
 
-    def delete_document(self, document_id: str) -> None:
+    def delete_document(
+        self,
+        document_id: str,
+    ) -> None:
         """
         Delete a document from the backend.
         """
@@ -71,7 +85,6 @@ class APIClient:
         )
 
         response.raise_for_status()
-
 
     def chat(
         self,
